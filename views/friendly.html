@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>500 · 服务器内部错误</title>
+<meta name="description" content="服务器内部错误（HTTP 500），请求暂时无法处理。请稍后重试或返回首页。">
+<meta name="theme-color" content="#F6F5F1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='23' cy='30' r='10' fill='none' stroke='%231B1A17' stroke-width='4' stroke-dasharray='54 8.8'/%3E%3Ccircle cx='41' cy='36.5' r='10' fill='none' stroke='%231B1A17' stroke-width='4' stroke-dasharray='6.3 18.8 37.7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://miaoda.feishu.cn">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Space+Grotesk:wght@500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+  :root{--paper:#F6F5F1;--ink:#1B1A17;--ink-soft:#33322E;--gray:#6E6C66;--line:#DAD8D1;--accent:#A86A3C;--font-num:'Space Grotesk','Noto Sans SC',system-ui,sans-serif;--font-body:'Noto Sans SC','PingFang SC','Microsoft YaHei',system-ui,sans-serif;--font-mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{min-height:100svh;display:grid;place-items:center;background-color:var(--paper);background-image:radial-gradient(circle,rgba(27,26,23,.05) 1px,transparent 1.2px),radial-gradient(900px 520px at 50% -12%,rgba(168,106,60,.07),transparent 62%);background-size:26px 26px,auto;color:var(--ink);font-family:var(--font-body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:rgba(168,106,60,.22)}
+  .stage{position:relative;width:100%;max-width:660px;padding:clamp(40px,8vh,88px) 24px 32px;text-align:center}
+  .glow{position:absolute;left:50%;top:34%;transform:translate(-50%,-50%);width:min(560px,92vw);aspect-ratio:1;background:radial-gradient(circle,rgba(168,106,60,.08),transparent 62%);pointer-events:none;z-index:0}
+  .stage>:not(.glow){position:relative;z-index:1}
+  /* ===== 断链插画 ===== */
+  .link-art { width: 58px; height: 58px; margin: 0 auto 30px; color: var(--ink); display: block;position: absolute !important;left: 20%;top: 2%;}
+  .link-art .ring-l { animation: fadeIn .8s cubic-bezier(.22, 1, .36, 1) .05s both; }
+  .link-art .ring-r { animation: settle .9s cubic-bezier(.22, 1, .36, 1) .22s both; }
+  /* ===== 终端行 ===== */
+  .terminal{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-mono);font-size:13px;letter-spacing:.06em;color:var(--gray);animation:fadeIn .8s ease .28s both}
+  .terminal .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none;animation:pulse 2.6s ease-in-out infinite}
+  /* ===== 巨型状态码 ===== */
+  .code{margin-top:22px;font-family:var(--font-num);font-weight:700;font-size:clamp(104px, 21vw, 216px);line-height:.96;letter-spacing:-.035em}
+  .digit{display:inline-block;opacity:0;animation:rise .7s cubic-bezier(.22,1,.36,1) forwards}
+  .digit:first-child{animation-delay:.32s}
+  .digit:nth-child(2){animation-delay:.4s}
+  .digit:nth-child(3){animation-delay:.48s}
+  .title{margin-top:26px;font-size:clamp(20px, 3vw, 25px);font-weight:700;letter-spacing:.02em;animation:fadeIn .8s ease .55s both}
+  .desc{margin:14px auto 0;max-width:44ch;font-size:15px;line-height:1.9;color:var(--gray);animation:fadeIn .8s ease .65s both}
+  /* ===== 操作区 ===== */
+  .actions{margin-top:38px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;animation:fadeIn .8s ease .75s both}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:48px;padding:0 30px;border-radius:999px;font-family:var(--font-body);font-size:15px;font-weight:500;letter-spacing:.02em;cursor:pointer;border:1px solid transparent;text-decoration:none;transition:background-color .18s ease,color .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease}
+  .btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .btn-primary{background:var(--ink);color:var(--paper)}
+  .btn-primary:hover{background:var(--ink-soft);transform:translateY(-1px)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-primary.is-loading{pointer-events:none;opacity:.92}
+  .btn-ghost{border-color:var(--ink);color:var(--ink);background:0 0}
+  .btn-ghost:hover{background:var(--ink);color:var(--paper);transform:translateY(-1px)}
+  .btn-ghost:active{transform:translateY(0)}
+  /* ===== 底栏 ===== */
+  .foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--gray);letter-spacing:.02em;animation:fadeIn .8s ease .85s both}
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(.09em); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes settle {
+    from { opacity: 0; transform: translate(6px, 8px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: .35; }
+  }
+  @media (max-width: 480px) {
+    .actions { flex-direction: column; }
+    .btn { width: 100%; }
+    .link-art { margin-bottom: 24px; }
+    .code { margin-top: 18px; }
+    .title { margin-top: 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important;
+    }
+    .digit, .link-art .ring-l, .link-art .ring-r, .terminal, .title, .desc, .actions, .foot { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+  <main class="stage" role="main">
+    <div class="glow" aria-hidden="true"></div>
+
+    <!-- ===== 断链插画：示意连接中断 ===== -->
+    <svg class="link-art" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+      <circle class="ring-l" cx="23" cy="30" r="10" stroke="currentColor" stroke-width="3.8" stroke-dasharray="54 8.8"/>
+      <circle class="ring-r" cx="41" cy="36.5" r="10" stroke="currentColor" stroke-width="3.8" stroke-dasharray="6.3 18.8 37.7"/>
+    </svg>
+
+    <p class="terminal"><span class="dot" aria-hidden="true"></span>HTTP/1.1 500 &middot; Internal Server Error</p>
+
+    <h1 class="code" aria-label="500">
+      <span class="digit">5</span><span class="digit">0</span><span class="digit">0</span>
+    </h1>
+
+    <h2 class="title">服务器遇到了一点小状况</h2>
+
+    <p class="desc">请求没有被正确处理，这通常不是你的操作造成的。稍等片刻再试一次，或返回首页继续浏览。</p>
+
+    <div class="actions">
+      <a class="btn btn-ghost" href="/">返回首页</a>
+    </div>
+
+    <p class="foot">问题持续存在？请稍后再来，或联系网站管理员。</p>
+  </main>
+</body>
+</html>

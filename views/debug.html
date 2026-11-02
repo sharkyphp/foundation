@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统异常 · {{ type }}</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background-color:#121417;color:#e4e7ec;font-family:"Segoe UI",Consolas,monospace;padding:40px 20px}
+        .container{max-width:1100px;margin:0 auto}
+        .header{border-left:4px solid #f56c6c;padding-left:18px;margin-bottom:24px}
+        h1{font-size:26px;color:#f56c6c;margin-bottom:8px}
+        .desc{color:#b0b8c4;font-size:15px}
+        .panel{background:#1d2129;border-radius:10px;padding:20px;margin-bottom:20px}
+        .meta-row{display:flex;padding:8px 0;border-bottom:1px solid #2c313a}
+        .meta-row:last-child{border-bottom:none}
+        .meta-label{width:110px;color:#86909c;flex-shrink:0}
+        .meta-value{color:#e4e7ec;word-break:break-all}
+        .sub-title{font-size:16px;margin:24px 0 12px;color:#c9cdd4}
+        pre{background:#0e1012;border:1px solid #2c313a;border-radius:8px;padding:16px;white-space:pre-wrap;overflow-x:auto;color:#dcdfe6;line-height:1.5}
+        .divider{height:1px;background:#2c313a;margin:30px 0 5px}
+        .copyright {font-size: 14px; color: #999;display: flex; justify-content: space-between; align-items: center;}
+        .copyright p {margin: 5px 0}    
+</style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{ type }}</h1>
+            <div class="desc">{{ message }}</div>
+        </div>
+
+        <div class="panel">
+            <div class="meta-row">
+                <div class="meta-label">Method</div>
+                <div class="meta-value">{{ method }}</div>
+            </div>
+            <div class="meta-row">
+                <div class="meta-label">Path</div>
+                <div class="meta-value">{{ path }}</div>
+            </div>            
+        </div>
+
+        <div class="panel">
+            <div class="meta-row">
+                <div class="meta-label">File</div>
+                <div class="meta-value">{{ file }}</div>
+            </div>
+            <div class="meta-row">
+                <div class="meta-label">Line</div>
+                <div class="meta-value">{{ line }}</div>
+            </div>
+            <div class="meta-row">
+                <div class="meta-label">Severity</div>
+                <div class="meta-value">{{ severity }}</div>
+            </div>
+        </div>
+
+        <div class="sub-title">堆栈信息</div>
+        <pre>{{ stack }}</pre>
+
+        <div class="divider"></div>
+        <div class="copyright">
+            <P>{{ project }} Version {{ version }}</p>
+            <P>{{ copyright }}</p>
+        </div>
+    </div>
+</body>
+
+</html>
