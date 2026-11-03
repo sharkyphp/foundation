@@ -155,6 +155,12 @@ class Application
         $timezoneId = Config::get('config.timezone', 'Asia/Shanghai');
         date_default_timezone_set($timezoneId);
 
+        // 启动时为所有 Model 统一绑定默认数据库连接。
+        // 不写死节点名：取 database 配置 hosts 下的第一个节点作为默认连接，
+        // 各入口（HTTP / Console）都走这里，无需重复手写注入。
+        $database = $this->container->get(\Sharky\Database\Database::class);
+        \Sharky\Database\Model::setConnection($database->connect());
+
         // 标记启动完成
         $this->container->singleton('foundation.started', static fn() => true);
 

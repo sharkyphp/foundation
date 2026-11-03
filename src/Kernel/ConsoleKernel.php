@@ -18,6 +18,7 @@ namespace Sharky\Foundation\Kernel;
 use Closure;
 use RuntimeException;
 use Sharky\Console\Context\Input;
+use Sharky\Console\Context\Output;
 use Sharky\Event\Events;
 use Sharky\Invoker\Invoker;
 use Sharky\Pipeline\Pipeline;
@@ -103,6 +104,7 @@ class ConsoleKernel
     public function dispatchCommand(Input $argvInput): void
     {
         Context::setInput($argvInput);
+        Context::setOutput(new Output());
 
         $command = Command::match($argvInput);
 

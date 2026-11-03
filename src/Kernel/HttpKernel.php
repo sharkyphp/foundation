@@ -119,6 +119,18 @@ final class HttpKernel
 
     public function sendResponse(ResponseInterface $response): void
     {
+        // CORS：依据配置白名单回显 Access-Control-Allow-Origin（预检与真实响应均覆盖）
+        $origin = $this->resolveCorsOrigin();
+        if ($origin !== null) {
+            $response->setHeader([
+                'Access-Control-Allow-Origin' => $origin,
+                'Vary'                        => 'Origin',
+            ]);
+            if (Config::get('http.response.cors.allow-credentials', false)) {
+                $response->setHeader('Access-Control-Allow-Credentials', 'true');
+            }
+        }
+
         // 设置状态码
         $code    = $response->getStatusCode();
         $reason  = $response->getReasonPhrase();
@@ -160,6 +172,48 @@ final class HttpKernel
                 'Access-Control-Allow-Headers' => $headers,
             ])
             ->setStatus(204);
+    }
+
+    /**
+     * 依据配置白名单解析 Access-Control-Allow-Origin 的取值。
+     *
+     * 白名单配置项：http.response.cors.whitelist（数组），每个元素是一个来源模式，
+     * 支持 * 通配（如 `http://127.0.0.1:*`、`https://*.doffish.com`）。
+     * - 请求不带 Origin 头：返回 null（不输出跨域响应头）。
+     * - Origin 命中白名单任一模式：回显该 Origin（支持凭据场景，不用 *）。
+     * - 未命中：返回 null。
+     */
+    private function resolveCorsOrigin(): ?string
+    {
+        $request = Context::getRequest();
+        if ($request === null) {
+            return null;
+        }
+
+        $whitelist = Config::get('http.response.cors.whitelist', []);
+        if (! is_array($whitelist)) {
+            $whitelist = [];
+        }
+
+        $origin = $request->getHeaderLine('Origin');
+        if ($origin === '') {
+            return null;
+        }
+
+        foreach ($whitelist as $pattern) {
+            if (is_string($pattern) && $this->matchCorsPattern($origin, $pattern)) {
+                return $origin;
+            }
+        }
+
+        return null;
+    }
+
+    // 通配匹配：将来源模式里的 * 当成 .* 做大小写不敏感正则匹配
+    private function matchCorsPattern(string $origin, string $pattern): bool
+    {
+        $regex = '/^' . str_replace('\\*', '.*', preg_quote($pattern, '/')) . '$/i';
+        return (bool) preg_match($regex, $origin);
     }
 
     // 派遣路由执行控制器

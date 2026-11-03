@@ -17,6 +17,7 @@ namespace Sharky\Foundation\Runtime;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Sharky\Console\Context\Input;
+use Sharky\Console\Context\Output;
 
 class Context
 {
@@ -57,6 +58,16 @@ class Context
     public function getInput()
     {
         return $this->get(Input::class);
+    }
+
+    public function setOutput(Output $output)
+    {
+        $this->set(Output::class, $output);
+    }
+
+    public function getOutput(): ?Output
+    {
+        return $this->get(Output::class);
     }
 
     public function cancel(): void

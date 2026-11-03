@@ -21,6 +21,7 @@
         "psr/http-message": "^2.0",
         "sharkyphp/cache": "^2.0.0",
         "sharkyphp/clock": "^2.0.0",
+        "sharkyphp/authorization": "^2.0.0",
         "sharkyphp/console": "^2.0.0",
         "sharkyphp/container": "^2.0.0",
         "sharkyphp/contracts": "^2.0.0",

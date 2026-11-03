@@ -90,6 +90,12 @@ return [
             'shared'   => false,
         ],
 
+        // 当前上下文命令行输出（命令执行前由 ConsoleKernel 注入）
+        \Sharky\Console\Context\Output::class                  => [
+            'concrete' => static fn() => Context::getOutput(),
+            'shared'   => false,
+        ],
+
         // 只读容器代理
         \Psr\Container\ContainerInterface::class             => [
             'concrete' => static fn() => new ContainerProxy($container),

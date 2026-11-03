@@ -158,7 +158,10 @@ final class ExceptionHandler
         }
 
         $tempFile = $this->debug ? 'debug.html' : 'friendly.html';
-        $tempPath = realpath(__DIR__ . "/../views/{$tempFile}");
+        // 注意：不要对路径调用 realpath()——文件不可解析时它返回 false，
+        // 而 loadTemplate(string $path) 在 strict_types 下收到 false 会抛 TypeError，
+        // 反而把真实异常吞掉。直接用字面路径，存在性交给 loadTemplate 的 is_file 判断。
+        $tempPath = __DIR__ . "/../views/{$tempFile}";
 
         $template = $this->loadTemplate($tempPath);
 
