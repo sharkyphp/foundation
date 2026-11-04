@@ -29,14 +29,44 @@ use Sharky\Log\Logger;
 use Sharky\Log\LogLevel;
 use Sharky\Support\Helper;
 use Throwable;
+use Composer\InstalledVersions;
 
 class Application
 {
     public const AUTHOR     = 'ByteSharky';
     public const PROJECT    = 'SharkyPHP';
-    public const VERSION    = '2.0.0';
     public const COPYRIGHT  = "Copyright \xC2\xA9 2024-%s " . self::AUTHOR;
-    public const POWERED_BY = self::PROJECT . "/" . self::VERSION;
+
+    /**
+     * Resolved framework version (lazy). Inferred at runtime from the
+     * installed Composer package so releases need no manual version edits.
+     */
+    private static ?string $version = null;
+
+    public static function version(): string
+    {
+        if (self::$version === null) {
+            self::$version = self::resolveVersion();
+        }
+        return self::$version;
+    }
+
+    public static function poweredBy(): string
+    {
+        return self::PROJECT . '/' . self::version();
+    }
+
+    private static function resolveVersion(): string
+    {
+        if (class_exists(InstalledVersions::class)
+            && InstalledVersions::isInstalled('sharkyphp/foundation')) {
+            $v = InstalledVersions::getPrettyVersion('sharkyphp/foundation');
+            if (is_string($v) && $v !== '') {
+                return $v;
+            }
+        }
+        return 'dev';
+    }
 
     private array $packages     = [];
     private array $consoleScans = [];
@@ -57,7 +87,7 @@ class Application
         $this->exHandler = new ExceptionHandler(debug: true);
 
         // 注册 header 发送回调
-        $xPoweredBy = self::POWERED_BY;
+        $xPoweredBy = self::poweredBy();
         header_register_callback(static function () use ($xPoweredBy) {
             header_remove("X-Powered-By");
             header("X-Powered-By: {$xPoweredBy}");
@@ -329,10 +359,10 @@ class Application
     {
         return [
             'project'    => self::PROJECT,
-            'version'    => self::VERSION,
+            'version'    => self::version(),
             'author'     => self::AUTHOR,
             'copyright'  => sprintf(self::COPYRIGHT, Clock::now()->format('Y')),
-            'powered_by' => self::POWERED_BY,
+            'powered_by' => self::poweredBy(),
             'directory'  => $this->directory,
             'packages'   => $this->getPackages(),
         ];

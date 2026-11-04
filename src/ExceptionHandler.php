@@ -171,7 +171,7 @@ final class ExceptionHandler
             $contentType = 'Content-Type: text/html; charset=utf-8';
             $data        = array_merge($output, [
                 'project'   => Application::PROJECT,
-                'version'   => Application::VERSION,
+                'version'   => Application::version(),
                 'copyright' => sprintf(Application::COPYRIGHT, date('Y')),
                 'method'    => $request ? $request->getMethod() : null,
                 'path'      => $request ? $request->getUri()->getPath() : null,
